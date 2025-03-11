@@ -27,45 +27,67 @@ class UserService {
         }
     }
 
-     login(email, password) {
-        try {
+    async login(email, password) {
 
+        console.log("service", email, password);
+        
+        try {
             // récupérer l'utilisateur correspondant à l'adresse email dans la base de données 0
             const getUser = 'SELECT * FROM users WHERE email =?';
             // récupérer le premier résultat (il y en aura qu'un seul) 1
-            const user =  bdd.query(getUser, [email]);
-
+            const [rows] = await bdd.query(getUser, [email]);
             // check si l'utilisateur existe
-            if (!user) {
+            if (!rows || rows.length === 0) {
                 throw new Error('utilisateur inconnu');
             }
-
+            const user = rows[0];
             // vérifier si le mot de passe est correcte
-            const validPassword =  bcrypt.compare(password, user[0].password);
+            const validPassword = await bcrypt.compare(password, user.password);
 
+            console.log(validPassword);
+            
             // check si le mot de passe est correcte
             if (!validPassword) {
                 throw new Error('mot de passe incorrect');
             }
-
             //génération du token
             const token = jwt.sign(
                 {
-                email: user[0].email,
-                username: user[0].username,
-                id: user[0].id
+                email: user.email,
+                username: user.username,
+                id: user.id
                 },
             process.env.JWT_SECRET,
-            { expiresIn: '24h' }
+            { expiresIn: '3h' }
             );
-
             return {
                 token: token,
             };
-
         } catch(error){
             throw new Error(error);
         };
+    };
+
+    async getAllUsers(){
+        try{
+            const getAllUsers = 'SELECT * FROM users';
+            const [users] = await bdd.query(getAllUsers);
+            return users;
+        } catch(error){
+            throw new Error(error);
+        }
+    };
+
+    async deleteUser(id){
+        try{
+            // préparation de la requête
+            const deleteUser = 'DELETE FROM users WHERE id = ?';
+            // supprimer l'utilisateur de la base de données
+            const [user] = await bdd.query(deleteUser,[id]);
+            return user;
+        } catch(error){
+            throw new Error(error);
+        }
     };
 };
 module.exports = new UserService();

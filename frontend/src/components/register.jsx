@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Container, Typography, Box, Alert } from "@mui/material";
+import {
+    TextField,
+    IconButton,
+    Container,
+    Typography,
+    Box,
+    Alert,
+    InputAdornment
+} from "@mui/material";
+import { Person, Email, Lock, HowToReg } from "@mui/icons-material";
 
 const Register = () => {
     const [form, setForm] = useState({
@@ -47,6 +56,13 @@ const Register = () => {
                         onChange={handleChange}
                         margin="normal"
                         required
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Person />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                     <TextField
                         fullWidth
@@ -57,6 +73,13 @@ const Register = () => {
                         onChange={handleChange}
                         margin="normal"
                         required
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Email />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                     <TextField
                         fullWidth
@@ -67,10 +90,19 @@ const Register = () => {
                         onChange={handleChange}
                         margin="normal"
                         required
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Lock />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
-                    <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                        Register
-                    </Button>
+                    <Box display="flex" justifyContent="center" mt={2}>
+                        <IconButton type="submit" color="primary" sx={{ fontSize: 40 }}>
+                            <HowToReg />
+                        </IconButton>
+                    </Box>
                 </form>
                 <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                     Already have an account?{" "}

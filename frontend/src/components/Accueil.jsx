@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { decodeToken } from "../auth/decodeToken";
 import axios from "axios";
+import SearchIcon from '@mui/icons-material/Search';
 import {
     Container,
     Typography,
@@ -29,6 +30,7 @@ const Accueil = () => {
         username: '',
         email: ''
     });
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Récupération des utilisateurs
     const fetchUsers = async () => {
@@ -39,6 +41,11 @@ const Accueil = () => {
             console.error(error);
         }
     };
+
+    const filteredUsers = users.filter(user => 
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
     // Ouvrir la boîte de dialogue d'édition
     const handleEditClick = (user) => {
@@ -141,8 +148,24 @@ const Accueil = () => {
                 <Typography variant="h5" sx={{ mt: 3 }}>
                     Liste des utilisateurs :
                 </Typography>
+
+                <Box display="flex" justifyContent="center" mt={2}>
+                <TextField
+                    label="Rechercher un utilisateur"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <SearchIcon style={{ marginRight: 8 }} />
+                        ),
+                    }}
+                />
+                </Box>
                 <List>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <ListItem key={user.id} divider>
                             <ListItemText primary={user.username} secondary={user.email} />
                             <ListItemSecondaryAction>

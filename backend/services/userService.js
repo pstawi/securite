@@ -89,5 +89,35 @@ class UserService {
             throw new Error(error);
         }
     };
+
+    async updateUser(id, username, email, password) {
+        try {
+            // Vérifier si l'utilisateur existe
+            const checkUser = 'SELECT * FROM users WHERE id = ?';
+            const [existingUser] = await bdd.query(checkUser, [id]);
+    
+            if (existingUser.length === 0) {
+                throw new Error('User not found');
+            }
+    
+            // Hasher le mot de passe uniquement s'il est fourni
+            // Garder l'ancien mot de passe par défaut
+            let hashedPassword = existingUser[0].password;
+            if (password) {
+                hashedPassword = await bcrypt.hash(password, 10);
+            }
+    
+            // Mise à jour de l'utilisateur
+            const updateQuery = 'UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?';
+            await bdd.query(updateQuery, [username, email, hashedPassword, id]);
+    
+            // Récupérer et retourner l'utilisateur mis à jour
+            const [updatedUser] = await bdd.query(checkUser, [id]);
+            return updatedUser[0];
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    
 };
 module.exports = new UserService();

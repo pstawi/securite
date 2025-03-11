@@ -65,6 +65,30 @@ class UserController {
             return res.status(400).json({message: error.message});
         }
     };
+
+    // fonction pour modifier un utilisateur
+    async updateUser(req, res) {
+        try {
+            const { id } = req.params;
+            const { username, email, password } = req.body;
+    
+            // Vérifier si tous les champs nécessaires sont présents
+            if (!username || !email) {
+                return res.status(400).json({ success: false, message: 'Username and email are required' });
+            }
+    
+            // Mettre à jour l'utilisateur
+            const updatedUser = await userService.updateUser(id, username, email, password);
+    
+            return res.status(200).json({
+                success: true,
+                data: updatedUser,
+                message: 'User updated successfully'
+            });
+        } catch (error) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
+    }
 }
 
 module.exports = new UserController();

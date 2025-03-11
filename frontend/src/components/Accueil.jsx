@@ -151,7 +151,7 @@ const Accueil = () => {
 
                 <Box display="flex" justifyContent="center" mt={2}>
                 <TextField
-                    label="Rechercher un utilisateur"
+                    label="Rechercher un utilisateur" 
                     variant="outlined"
                     fullWidth
                     margin="normal"
